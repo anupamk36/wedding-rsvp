@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /i/
+Disallow: /api/
+Disallow: /events/
+Disallow: /dashboard
