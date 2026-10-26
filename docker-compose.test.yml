@@ -1,0 +1,54 @@
+# Test overlay. Use through scripts/docker-test.sh, which runs it as a separate
+# compose project ("gatherly-test") so it never touches your dev database.
+
+services:
+  db:
+    ports: !reset []
+    volumes: !reset []
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  app:
+    ports: !reset []
+    # Browsers must not use the hostname "app": Chrome's HSTS preload list covers the
+    # .app TLD (which also matches the bare name) and would force https.
+    networks:
+      default:
+        aliases: [web]
+    environment:
+      APP_URL: http://web:3000
+      RATE_LIMIT_DISABLED: "true"
+
+  worker:
+    profiles: [never]
+
+  # Unit + integration tests against the real PostgreSQL (throwaway database per suite).
+  test:
+    build:
+      context: .
+      target: tools
+    image: gatherly-tools:local
+    command: ["npx", "vitest", "run"]
+    environment:
+      TEST_DATABASE_URL: postgres://${POSTGRES_USER:-gatherly}:${POSTGRES_PASSWORD:-gatherly}@db:5432/${POSTGRES_DB:-gatherly}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: [test]
+
+  # Browser tests against the production image.
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.64.1-noble
+    working_dir: /work
+    command: ["sh", "-c", "npm ci --no-audit --no-fund --ignore-scripts && npx playwright test"]
+    environment:
+      E2E_BASE_URL: http://web:3000
+      CI: "true"
+    volumes:
+      - .:/work
+      - /work/node_modules
+    ipc: host
+    depends_on:
+      app:
+        condition: service_healthy
+    profiles: [e2e]
