@@ -11,6 +11,7 @@ test("invitation works on a phone without horizontal scrolling", async ({ page, 
   await expect(page.getByRole("link", { name: "Asha" })).toBeVisible();
   await page.goto(`/events/${eventId}/invitations`);
   await page.getByRole("button", { name: "Create invitations" }).click();
+  await expect(page.getByRole("link", { name: "Asha" })).toBeVisible();
   const url = (await invitationUrls(page.request, eventId))["Asha"];
 
   const ctx = await browser.newContext({ ...test.info().project.use });
@@ -20,15 +21,17 @@ test("invitation works on a phone without horizontal scrolling", async ({ page, 
   const overflow = await guest.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 
+  await guest.getByRole("button", { name: "Reply now" }).click();
   // Plus-one allowed by the birthday template.
-  await guest.getByRole("button", { name: "+ Bring a guest" }).click();
+  await guest.getByRole("button", { name: "Add a guest" }).click();
   await guest.getByLabel("Guest name").fill("Ravi");
+  await guest.getByRole("radiogroup", { name: "Birthday party – everyone" }).getByText("Attending", { exact: true }).click();
   await guest.getByRole("button", { name: "Continue" }).click();
-  await guest.getByRole("button", { name: "Attending: everyone, Birthday party", exact: true }).click();
-  await guest.getByRole("button", { name: "Continue" }).click();
-  await guest.getByRole("button", { name: "Continue" }).click();
+  await guest.getByRole("button", { name: "Review" }).click();
   await guest.getByRole("button", { name: "Send response" }).click();
-  await expect(guest.getByText("Thank you — your response has been saved.")).toBeVisible();
+  await expect(guest.getByRole("status").getByRole("heading", { name: /Thank you/ })).toBeVisible();
+  const afterOverflow = await guest.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(afterOverflow).toBeLessThanOrEqual(0);
   const s = await (await page.request.get(`/api/events/${eventId}/summary`)).json();
   expect(s.activities[0]).toMatchObject({ confirmed: 2 });
   expect(s.totals.plusOnes).toBe(1);

@@ -44,7 +44,9 @@ test("host plans a wedding, a family RSVPs, plans change, and a revoked link sto
   const a11y = await new AxeBuilder({ page: guest }).analyze();
   expect(a11y.violations.filter((v) => v.impact === "critical" || v.impact === "serious")).toEqual([]);
 
-  await guest.getByRole("button", { name: "Continue" }).click(); // party
+  await guest.getByRole("button", { name: /^Reply for all 4/ }).click();
+  // Answers differ per person, so open each event person by person.
+  for (const _ of ACTIVITIES) await guest.getByRole("button", { name: "Answer person by person" }).first().click();
   for (const a of ACTIVITIES) {
     for (const n of names) {
       const status = n === "Parent 2" ? "Not attending" : n === "Parent 1" && a !== "Wedding ceremony" ? "Not attending" : "Attending";
@@ -52,20 +54,23 @@ test("host plans a wedding, a family RSVPs, plans change, and a revoked link sto
     }
   }
   await guest.getByRole("button", { name: "Continue" }).click(); // activities -> details
-  await expect(guest.getByRole("heading", { name: "A few details" })).toBeVisible();
+  await expect(guest.getByRole("heading", { name: "Food and access" })).toBeVisible();
   await guest.getByRole("button", { name: "Continue" }).click(); // details -> travel
-  const stay = guest.getByRole("group", { name: "Will anyone need a place to stay?" });
-  await stay.getByText("Yes", { exact: true }).click();
-  await expect(stay.getByRole("radio", { name: "Yes" })).toBeChecked();
+  const stay = guest.getByRole("switch", { name: "We need a place to stay" });
+  await stay.click();
+  await expect(stay).toHaveAttribute("aria-checked", "true");
   // Only the couple needs a room; one room for the whole stay.
-  await guest.getByRole("checkbox", { name: "Parent 1" }).uncheck();
+  const parent1 = guest.getByRole("button", { name: "Parent 1" });
+  await parent1.click();
+  await expect(parent1).toHaveAttribute("aria-pressed", "false");
   await guest.getByLabel("Check-in").fill(start);
   await guest.getByLabel("Check-out").fill(isoDate(43));
-  await guest.getByLabel("Rooms needed").selectOption("1");
-  await guest.getByRole("button", { name: "Continue" }).click(); // travel -> review
+  await guest.getByRole("button", { name: "One more room" }).click();
+  await expect(guest.getByText("3 room-nights")).toBeVisible();
+  await guest.getByRole("button", { name: "Review" }).click(); // travel -> review
   await expect(guest.getByRole("heading", { name: "Check your answers" })).toBeVisible();
   await guest.getByRole("button", { name: "Send response" }).click();
-  await expect(guest.getByText("Thank you — your response has been saved.")).toBeVisible();
+  await expect(guest.getByRole("status").getByRole("heading", { name: /Thank you/ })).toBeVisible();
 
   // Host sees the right headcounts.
   let s = await summary(page.request, eventId);
@@ -82,13 +87,13 @@ test("host plans a wedding, a family RSVPs, plans change, and a revoked link sto
 
   // Guest changes plans: Parent 2 now joins the reception.
   await guest.getByRole("button", { name: "Change my response" }).click();
-  await guest.getByRole("button", { name: "Continue" }).click();
+  // Reception already has mixed answers, so it opens person by person.
   await guest.getByRole("radiogroup", { name: "Reception – Parent 2" }).getByText("Attending", { exact: true }).click();
   await guest.getByRole("button", { name: "Continue" }).click();
   await guest.getByRole("button", { name: "Continue" }).click();
-  await guest.getByRole("button", { name: "Continue" }).click();
+  await guest.getByRole("button", { name: "Review" }).click();
   await guest.getByRole("button", { name: "Save changes" }).click();
-  await expect(guest.getByText("Thank you — your response has been saved.")).toBeVisible();
+  await expect(guest.getByRole("status").getByRole("heading", { name: /Thank you/ })).toBeVisible();
   s = await summary(page.request, eventId);
   expect(by("Reception").confirmed).toBe(3);
 

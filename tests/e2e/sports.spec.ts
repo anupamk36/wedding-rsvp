@@ -31,13 +31,14 @@ test("sports organizer collects availability across three candidate slots", asyn
   const guest = await ctx.newPage();
   for (const [name, answers] of Object.entries(plan)) {
     await guest.goto(pathOf(urls[name]));
+    await guest.getByRole("button", { name: "Mark your availability" }).click();
     await expect(guest.getByRole("heading", { name: "When can you make it?" })).toBeVisible();
     for (const [i, slot] of ["Morning slot", "Evening slot", "Next morning slot"].entries()) {
       await guest.getByRole("radiogroup", { name: slot, exact: true }).getByText(answers[i], { exact: true }).click();
     }
     await guest.getByRole("button", { name: "Continue" }).click();
     await guest.getByRole("button", { name: "Send response" }).click();
-    await expect(guest.getByText("Thank you — your response has been saved.")).toBeVisible();
+    await expect(guest.getByRole("status").getByRole("heading", { name: /Thank you/ })).toBeVisible();
   }
   await ctx.close();
 

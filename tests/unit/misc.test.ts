@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseSettings } from "@/domain/settings";
 import { resolveTemplateDate } from "@/domain/templates";
-import { addDays, daysBetween, eachDate, isIsoDate, utcToZoned, zonedToUtc } from "@/lib/dates";
+import { addDays, daysBetween, eachDate, formatDateRange, isIsoDate, utcToZoned, zonedToUtc } from "@/lib/dates";
 import { decrypt, encrypt, generateToken, sha256 } from "@/server/lib/crypto";
 import { csvCell } from "@/server/modules/exports";
 import { normalizePhone, parseGuestList } from "@/server/modules/guests";
@@ -29,6 +29,13 @@ describe("dates", () => {
     // New York: EDT (-4) before 1 Nov 2026, EST (-5) after.
     expect(zonedToUtc("2026-10-31", "12:00", "America/New_York").toISOString()).toBe("2026-10-31T16:00:00.000Z");
     expect(zonedToUtc("2026-11-02", "12:00", "America/New_York").toISOString()).toBe("2026-11-02T17:00:00.000Z");
+  });
+
+  it("formats date ranges without repeating the month or year", () => {
+    expect(formatDateRange("2026-11-20", "2026-11-22")).toBe("Fri 20 – Sun 22 Nov 2026");
+    expect(formatDateRange("2026-11-30", "2026-12-01", { weekday: false, year: false })).toBe("30 Nov – 1 Dec");
+    expect(formatDateRange("2026-12-31", "2027-01-01", { weekday: false })).toBe("31 Dec 2026 – 1 Jan 2027");
+    expect(formatDateRange("2026-11-20", "2026-11-20", { month: "long" })).toBe("Fri 20 November 2026");
   });
 
   it("clamps template days to the event range", () => {
@@ -118,5 +125,45 @@ describe("database URL helpers", () => {
     expect(normalizeSslMode("postgres://u:p@localhost/db")).toBe("postgres://u:p@localhost/db");
     expect(isLocalDatabaseUrl("postgres://gatherly@db:5432/gatherly")).toBe(true);
     expect(isLocalDatabaseUrl("postgres://u:p@ep-x.ap-southeast-1.aws.neon.tech/neondb")).toBe(false);
+  });
+});
+
+describe("calendar export", () => {
+  it("builds a valid, escaped and folded iCalendar file", async () => {
+    const { buildIcs } = await import("@/lib/ics");
+    const ics = buildIcs(
+      "Purva & Anupam",
+      [
+        { uid: "a1@gatherly", title: "Sangeet, dinner; dance", start: "2026-11-21T13:30:00.000Z", end: null, location: "Lakeside Palace, Udaipur" },
+        { uid: "a2@gatherly", title: "Wedding", start: "2026-11-22T05:30:00.000Z", end: "2026-11-22T08:30:00.000Z", description: "x".repeat(120) },
+      ],
+      new Date("2026-10-27T00:00:00.000Z"),
+    );
+    expect(ics.startsWith("BEGIN:VCALENDAR\r\n")).toBe(true);
+    expect(ics.trimEnd().endsWith("END:VCALENDAR")).toBe(true);
+    expect(ics).toContain("SUMMARY:Sangeet\\, dinner\\; dance");
+    expect(ics).toContain("DTSTART:20261121T133000Z");
+    expect(ics).toContain("DTEND:20261121T153000Z"); // default two hours
+    expect(ics).toContain("LOCATION:Lakeside Palace\\, Udaipur");
+    expect(ics.split("\r\n").every((l) => new TextEncoder().encode(l).length <= 75)).toBe(true);
+    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(2);
+  });
+});
+
+describe("guest answer summaries", () => {
+  it("summarises shared, mixed and blank answers", async () => {
+    const { activityResult, sharedAnswer, isMixed, shortLabel, initials } = await import("@/components/rsvp/logic");
+    const people = ["a", "b", "c"].map((key) => ({ key, name: key.toUpperCase(), isPlusOne: false, isNew: false, relationship: null, dietary: [], dietaryNotes: "", accessibilityNeeds: "" }));
+    const labels = { attending: "Attending", maybe: "Maybe", not_attending: "Not attending" } as const;
+    const all = { "a|x": "attending", "b|x": "attending", "c|x": "attending" } as const;
+    expect(activityResult("x", people, all, labels)).toMatchObject({ text: "All 3 attending", tone: "success" });
+    expect(sharedAnswer("x", people, all)).toBe("attending");
+    const mixed = { "a|x": "attending", "b|x": "maybe" } as const;
+    expect(activityResult("x", people, mixed, labels).text).toBe("1 attending · 1 maybe · 1 blank");
+    expect(isMixed("x", people, mixed)).toBe(true);
+    expect(activityResult("x", people, {}, labels)).toMatchObject({ text: "No answer", tone: "info", answered: false });
+    expect(shortLabel("The Sharma family", 4)).toBe("Sharma family");
+    expect(shortLabel("Ishaan Gupta", 1)).toBe("Ishaan");
+    expect(initials("Rohit Sharma")).toBe("RS");
   });
 });

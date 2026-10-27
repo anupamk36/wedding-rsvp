@@ -19,10 +19,10 @@ export const metadata: Metadata = {
 
 export default function InvitationPage({ params, searchParams }: PageProps<"/i/[token]">) {
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6 sm:py-10">
+    <main className="mx-auto w-full max-w-xl flex-1 sm:px-4 sm:py-10">
       <Suspense
         fallback={
-          <div className="space-y-4" role="status" aria-busy="true" aria-label="Loading your invitation">
+          <div className="space-y-4 p-4" role="status" aria-busy="true" aria-label="Loading your invitation">
             <Skeleton className="h-64" />
             <Skeleton className="h-40" />
           </div>
@@ -30,7 +30,7 @@ export default function InvitationPage({ params, searchParams }: PageProps<"/i/[
       >
         <Invitation params={params} searchParams={searchParams} />
       </Suspense>
-      <p className="mt-10 text-center text-xs text-muted">
+      <p className="px-5 py-8 text-center text-xs text-muted">
         This link is personal to your invitation — please don&rsquo;t forward it. Your answers are only shared with the hosts.
       </p>
     </main>
@@ -39,7 +39,7 @@ export default function InvitationPage({ params, searchParams }: PageProps<"/i/[
 
 function Problem({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface px-6 py-12 text-center">
+    <div className="m-4 rounded-[20px] border border-border bg-surface px-6 py-12 text-center sm:m-0">
       <h1 className="font-display text-2xl font-semibold">{title}</h1>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted">{body}</p>
     </div>
@@ -71,14 +71,14 @@ async function Invitation({
   }
   const view = result;
   return (
-    <div className={`accent-${view.event.settings.theme.accent} space-y-6`}>
-      <InvitationHero event={view.event} activities={view.activities} greeting={greetingFor(view.invitation.label)} />
+    <div className={`accent-${view.event.settings.theme.accent}`}>
       <RsvpFlow
         key={view.invitation.responseVersion}
         view={view}
         endpoint={`/api/public/invitations/${token}/response`}
         mode="guest"
         justSaved={sp.saved === "1"}
+        invitation={<InvitationHero event={view.event} activities={view.activities} greeting={greetingFor(view.invitation.label, view.people.length)} />}
       />
     </div>
   );
@@ -99,7 +99,8 @@ async function loadInvitation(db: Database, token: string, ip: string) {
   }
 }
 
-/** "Dear Asha", or "For the Sharma family" for household names. */
-function greetingFor(label: string): string {
-  return /^the\s/i.test(label) ? `For ${label.replace(/^the/i, "the")}` : `Dear ${label}`;
+/** "Dear Asha", or "For the Sharma family · 4 people" for households. */
+function greetingFor(label: string, people: number): string {
+  const base = /^the\s/i.test(label) ? `For ${label.replace(/^the/i, "the")}` : `Dear ${label}`;
+  return people > 1 ? `${base} · ${people} people` : base;
 }

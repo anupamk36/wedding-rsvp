@@ -94,6 +94,25 @@ export function formatDate(date: string, opts: Intl.DateTimeFormatOptions = {}):
   }).format(new Date(`${date}T00:00:00Z`));
 }
 
+/**
+ * "Fri 20 – Sun 22 Nov 2026" (no repeated month or year). Options drop the
+ * weekday or year, or spell the month out.
+ */
+export function formatDateRange(
+  start: string,
+  end: string,
+  { month = "short", weekday = true, year = true }: { month?: "short" | "long"; weekday?: boolean; year?: boolean } = {},
+): string {
+  const part = (d: string, o: Intl.DateTimeFormatOptions) => formatDate(d, { weekday: undefined, day: undefined, month: undefined, year: undefined, ...o });
+  const wd = (d: string) => (weekday ? `${part(d, { weekday: "short" })} ` : "");
+  const day = (d: string) => String(Number(d.slice(8, 10)));
+  const full = (d: string, withYear = year) => `${wd(d)}${day(d)} ${part(d, { month })}${withYear ? ` ${d.slice(0, 4)}` : ""}`;
+  if (start === end) return full(start);
+  if (start.slice(0, 4) !== end.slice(0, 4)) return `${full(start, true)} – ${full(end, true)}`;
+  const from = start.slice(0, 7) === end.slice(0, 7) ? `${wd(start)}${day(start)}` : full(start, false);
+  return `${from} – ${full(end)}`;
+}
+
 export function formatDateTime(
   instant: Date | string,
   timeZone: string,
