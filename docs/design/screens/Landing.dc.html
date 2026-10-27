@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gatherly landing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#FBF6EE}
+a{text-decoration:none;color:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 24px;border-radius:14px;font-size:16px;font-weight:600;white-space:nowrap}
+.btn.p{background:#7C1D3E;color:#fff}
+.btn.s{background:#FFFEFB;color:#241A1D;border:1.5px solid #D3C6B4}
+.btn.sm{height:44px;padding:0 16px;font-size:14.5px;border-radius:12px}
+.btn:focus-visible,.lnk:focus-visible{outline:2px solid #7C1D3E;outline-offset:2px}
+.card{background:#FFFEFB;border:1px solid #E8DFD2;border-radius:20px}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7C1D3E}
+.seg{flex:1;height:40px;border-radius:10px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.seg.a{background:#1B6B43;border-color:#1B6B43;color:#fff}
+</style>
+</helmet>
+<div style="background:#FBF6EE;color:#241A1D;font-family:'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;min-height:1700px">
+
+  <!-- Nav -->
+  <header style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+    <a class="lnk" href="Landing.dc.html" style="font-family:'Fraunces',Georgia,serif;font-size:26px;font-weight:600;letter-spacing:-0.01em;color:#5E1530">Gatherly</a>
+    <nav aria-label="Account" style="display:flex;align-items:center;gap:10px">
+      <a class="btn s sm" href="Host-Overview.dc.html">Sign in</a>
+      <a class="btn p sm" href="Host-Overview.dc.html">Create an event</a>
+    </nav>
+  </header>
+
+  <main style="flex:1">
+    <!-- Hero -->
+    <section style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:48px 24px 72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:56px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <span class="eyebrow">RSVPs that turn into a plan</span>
+        <h1 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(38px,5vw,60px);line-height:1.06;letter-spacing:-0.02em;text-wrap:balance">Know who's coming to what, and what that means for rooms and meals.</h1>
+        <p style="margin:0;font-size:19px;line-height:1.5;color:#5A4D4B;max-width:520px">Every guest or household gets one private link and answers for each activity, person by person. You see headcounts update live, plus stays, meals and pickups when your event needs them.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <a class="btn p" href="Host-Overview.dc.html">Start planning, it's free</a>
+          <a class="btn s" href="Main.dc.html">See what guests see</a>
+        </div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px" aria-label="Works for">
+          <li style="height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;background:#F5E3E8;color:#5E1530;font-size:13.5px;font-weight:600">Weddings</li>
+          <li style="height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;background:#E1F5EC;color:#0B4A38;font-size:13.5px;font-weight:600">Trips</li>
+          <li style="height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;background:#FDF0DC;color:#6B2F08;font-size:13.5px;font-weight:600">Birthdays</li>
+          <li style="height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;background:#E2F1FB;color:#0A4466;font-size:13.5px;font-weight:600">Sports polls</li>
+          <li style="height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;background:#EFE8DD;color:#3E3431;font-size:13.5px;font-weight:600">Dinners</li>
+        </ul>
+        <p style="margin:0;font-size:14px;color:#6B5D5B">Guests need no app and no account. Links open inside WhatsApp.</p>
+      </div>
+
+      <!-- Hero composition -->
+      <div aria-hidden="true" style="position:relative;min-height:440px">
+        <div style="position:absolute;right:0;top:0;width:min(86%,400px);height:100%;background:#E1F5EC;border-radius:28px"></div>
+        <div class="card" style="position:relative;margin:36px 0 0 0;width:min(100%,330px);padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(60,20,30,0.14)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Fraunces',Georgia,serif;font-size:20px;font-weight:600">Day out</span><span style="font-size:13px;color:#6B5D5B">Sat 13 Dec · 9 AM</span></div>
+          <span style="font-size:13px;color:#5A4D4B">Nisha, Dev and Kabir · everyone</span>
+          <div style="display:flex;gap:6px"><span class="seg a">✓ Attending</span><span class="seg">Maybe</span><span class="seg">Not attending</span></div>
+        </div>
+        <div class="card" style="position:relative;margin:-8px 0 0 auto;width:min(100%,340px);padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 40px rgba(60,20,30,0.18)">
+          <span class="eyebrow" style="font-size:11.5px">Live headcount</span>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>Day out</span><span style="color:#1B6B43">14</span></div><div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:#E6ECF7"><span style="width:70%;background:#1B6B43"></span><span style="width:10%;background:#E8A33A"></span><span style="width:6%;background:#8C7F7B"></span></div></div>
+            <div style="display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>Farewell brunch</span><span style="color:#1B6B43">11</span></div><div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:#E6ECF7"><span style="width:55%;background:#1B6B43"></span><span style="width:15%;background:#E8A33A"></span><span style="width:5%;background:#8C7F7B"></span></div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center">
+            <div style="background:#F6EFE3;border-radius:10px;padding:8px 2px"><div style="font-size:19px;font-weight:700">12</div><div style="font-size:11.5px;color:#5A4D4B">room-nights</div></div>
+            <div style="background:#F6EFE3;border-radius:10px;padding:8px 2px"><div style="font-size:19px;font-weight:700">3</div><div style="font-size:11.5px;color:#5A4D4B">vegetarian</div></div>
+            <div style="background:#F6EFE3;border-radius:10px;padding:8px 2px"><div style="font-size:19px;font-weight:700">4</div><div style="font-size:11.5px;color:#5A4D4B">pickups</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section style="background:#F6EFE3;border-top:1px solid #E8DFD2;border-bottom:1px solid #E8DFD2">
+      <div style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:72px 24px;display:flex;flex-direction:column;gap:36px">
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:640px">
+          <span class="eyebrow">How it works</span>
+          <h2 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(30px,3.6vw,42px);line-height:1.12;letter-spacing:-0.01em;text-wrap:balance">Three steps, and the spreadsheet is gone.</h2>
+        </div>
+        <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px">
+          <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+            <li class="card" style="padding:26px;display:flex;flex-direction:column;gap:12px">
+              <span style="font-family:'Fraunces',Georgia,serif;font-size:44px;font-weight:500;line-height:1;color:#E8A33A;-webkit-text-stroke:0">{{s.n}}</span>
+              <h3 style="margin:0;font-size:20px;font-weight:700;line-height:1.25">{{s.title}}</h3>
+              <p style="margin:0;font-size:16px;line-height:1.5;color:#5A4D4B">{{s.body}}</p>
+            </li>
+          </sc-for>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Templates -->
+    <section style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:80px 24px 0;display:flex;flex-direction:column;gap:36px">
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:640px">
+        <span class="eyebrow">Start from a template</span>
+        <h2 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(30px,3.6vw,42px);line-height:1.12;letter-spacing:-0.01em;text-wrap:balance">One tool, shaped to the occasion.</h2>
+      </div>
+      <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:16px">
+        <sc-for list="{{templates}}" as="t" hint-placeholder-count="6">
+          <li class="card" style="padding:24px;display:flex;flex-direction:column;gap:16px">
+            <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:{{t.bg}};color:{{t.fg}}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.d}}"/></svg></span>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <h3 style="margin:0;font-family:'Fraunces',Georgia,serif;font-size:23px;font-weight:600;line-height:1.2">{{t.title}}</h3>
+              <p style="margin:0;font-size:15.5px;line-height:1.5;color:#5A4D4B">{{t.body}}</p>
+            </div>
+            <p style="margin:auto 0 0;padding-top:14px;border-top:1px solid #E8DFD2;font-size:13.5px;line-height:1.4;color:#6B5D5B"><span style="font-weight:700;color:#3E3431">Includes</span> · {{t.extras}}</p>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <!-- Features -->
+    <section style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:80px 24px;display:flex;flex-direction:column;gap:36px">
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:640px">
+        <span class="eyebrow">Built for real groups</span>
+        <h2 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(30px,3.6vw,42px);line-height:1.12;letter-spacing:-0.01em;text-wrap:balance">For any gathering where people answer more than yes or no.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));gap:20px">
+        <sc-for list="{{features}}" as="f" hint-placeholder-count="4">
+          <div style="display:flex;gap:18px;padding:24px 0;border-top:1.5px solid #D3C6B4">
+            <span aria-hidden="true" style="flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#F5E3E8;color:#7C1D3E"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="{{f.d}}"/></svg></span>
+            <div style="display:flex;flex-direction:column;gap:6px"><h3 style="margin:0;font-size:20px;font-weight:700;line-height:1.25">{{f.title}}</h3><p style="margin:0;font-size:16px;line-height:1.5;color:#5A4D4B">{{f.body}}</p></div>
+          </div>
+        </sc-for>
+      </div>
+      
+    </section>
+
+    <!-- Closing CTA -->
+    <section style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:0 24px 80px">
+      <div style="position:relative;overflow:hidden;background:#5E1530;border-radius:28px;padding:64px 32px;text-align:center;color:#FBF6EE;display:flex;flex-direction:column;align-items:center;gap:20px">
+        <h2 style="position:relative;margin:0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-style:italic;font-size:clamp(32px,4vw,46px);line-height:1.1;max-width:620px;text-wrap:balance">Send one link. Get the whole plan back.</h2>
+        <a class="btn" href="Host-Overview.dc.html" style="position:relative;background:#E8A33A;color:#2A1600">Start planning, it's free</a>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top:1px solid #E8DFD2;padding:24px;text-align:center;font-size:14px;color:#6B5D5B">Gatherly · Guests' responses are private to the hosts of each event.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1700}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+templates: [
+{ d: 'M3.5 15a4.5 4.5 0 1 0 9 0 4.5 4.5 0 0 0-9 0M11.5 9a4.5 4.5 0 1 0 9 0 4.5 4.5 0 0 0-9 0', bg: '#F5E3E8', fg: '#5E1530', title: 'Multi-day wedding', body: 'Several ceremonies over a few days, with families, stays and meals.', extras: 'Stays, meals, transport, accessibility' },
+{ d: 'M4 20h16M5 20v-6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6M12 12V8M12 8c-1-1-1-2 0-3 1 1 1 2 0 3M5 16c2 1.5 3 1.5 5 0s3-1.5 5 0 3 1.5 4 .5', bg: '#FDF0DC', fg: '#6B2F08', title: 'Birthday party', body: 'One party with plus-ones, kids and food preferences.', extras: 'Plus-ones, meals, dietary needs' },
+{ d: 'M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10zM10 11a2 2 0 1 0 4 0 2 2 0 0 0-4 0', bg: '#E1F5EC', fg: '#0B4A38', title: 'Weekend trip', body: 'A getaway with travel dates, stays and shared plans.', extras: 'Stays, transport, dietary needs' },
+{ d: 'M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0M12 8l3.5 2.5-1.3 4h-4.4l-1.3-4z', bg: '#E2F1FB', fg: '#0A4466', title: 'Sports meetup', body: 'Collect availability across candidate slots and see who can play.', extras: 'Availability slots, minimum players' },
+{ d: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 1-3 4-3 7h3v11', bg: '#EFE8DD', fg: '#3E3431', title: 'Dinner or house party', body: 'A single gathering with headcount and dietary needs.', extras: 'Plus-ones, dietary needs' },
+{ d: 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4', bg: '#E6ECF7', fg: '#1F3F78', title: 'Start from scratch', body: 'Add your own activities and turn on only the extras you need.', extras: 'Everything optional' }
+],
+steps: [
+{ n: '1', title: 'Set up the event', body: 'Start from a template (wedding, birthday, trip, dinner, sports poll) or build your own list of activities and time slots.' },
+{ n: '2', title: 'Send one link per household', body: 'Paste the links into WhatsApp or send them by email. Each link is private to that guest or household.' },
+{ n: '3', title: 'Watch the plan fill in', body: 'Headcounts update as replies and changes arrive, with room-nights, meal counts and pickups when you switch them on.' }
+],
+features: [
+{ d: 'M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z', title: 'Every activity, separately', body: 'Guests answer per activity, so each ceremony, game or dinner gets its own headcount.' },
+{ d: 'M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1a3 3 0 0 0-2-2.8M15.5 4.3a3.5 3.5 0 0 1 0 6.4', title: 'Households, counted as people', body: 'One person answers for the household, and every person is still counted exactly once.' },
+{ d: 'M3 18v-9M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5', title: 'Stays, meals and travel, when you need them', body: 'Switch on only what your event needs. Room-nights, meal counts with dietary needs and pickups come straight from the replies.' },
+{ d: 'M12 3l2.5 5.5L20 9.5l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-1z', title: 'No app, no account for guests', body: 'A private link opens on any phone, and guests can change their answers until the deadline.' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

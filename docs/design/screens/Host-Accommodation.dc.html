@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Host accommodation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#FBF6EE}
+a{text-decoration:none;color:inherit}
+button{font-family:'DM Sans',system-ui,sans-serif}
+.nav{display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:10px;font-size:14.5px;font-weight:500;color:#5A4D4B}
+.nav:hover{background:#F1E9DC}
+.nav.on{background:#F5E3E8;color:#5E1530;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 16px;border-radius:12px;font-size:14.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.s{background:#FFFEFB;color:#241A1D;border:1.5px solid #D3C6B4}
+.btn:focus-visible,.nav:focus-visible,.tab:focus-visible{outline:2px solid #7C1D3E;outline-offset:2px}
+.tab{height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tab.on{background:#7C1D3E;border-color:#7C1D3E;color:#fff}
+.card{background:#FFFEFB;border:1px solid #E8DFD2;border-radius:18px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7C1D3E}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14.5px}
+th{text-align:left;padding:12px 16px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5A4D4B;background:#F6EFE3;white-space:nowrap}
+td{padding:14px 16px;border-top:1px solid #E8DFD2;vertical-align:middle}
+.pill{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.pill.ok{background:#E1F1E7;color:#124A2E}
+.pill.wait{background:#FBEACB;color:#5C3600}
+.pill.miss{background:#F5E3E8;color:#5E1530}
+</style>
+</helmet>
+<div style="display:flex;flex-wrap:wrap;min-height:1000px;background:#FBF6EE;color:#241A1D;font-family:'DM Sans',system-ui,sans-serif">
+
+  <aside style="flex:1 1 248px;max-width:100%;box-sizing:border-box;padding:24px 16px;background:#F6EFE3;border-right:1px solid #E8DFD2;display:flex;flex-direction:column;gap:24px">
+    <a href="Host-Overview.dc.html" style="font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;letter-spacing:-0.01em;padding:0 12px;color:#5E1530">Gatherly</a>
+    <div style="background:#FFFEFB;border:1px solid #E8DFD2;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px">
+      <span style="font-size:12px;font-weight:600;color:#6B5D5B">Event</span>
+      <span style="font-size:15px;font-weight:700;line-height:1.3">Purva &amp; Anupam's Wedding</span>
+      <span style="font-size:13px;color:#6B5D5B">Wedding · 20–22 Nov</span>
+    </div>
+    <nav aria-label="Event" style="display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="10">
+        <a class="nav {{n.cls}}" href="{{n.href}}" aria-current="{{n.current}}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"/></svg>
+          <span>{{n.label}}</span>
+        </a>
+      </sc-for>
+    </nav>
+  </aside>
+
+  <main style="flex:999 1 560px;min-width:0;box-sizing:border-box;padding:32px 40px 48px;display:flex;flex-direction:column;gap:24px">
+    <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h1 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:36px;line-height:1.1;letter-spacing:-0.01em">Accommodation</h1>
+        <p style="margin:0;font-size:14.5px;color:#5A4D4B;max-width:560px;line-height:1.45">Room-nights are counted from what guests asked for. Nothing here is assigned until you confirm a room.</p>
+      </div>
+      <a class="btn s" href="Host-Accommodation.dc.html">Export CSV</a>
+    </header>
+
+    <!-- Night by night -->
+    <section class="card" aria-labelledby="nights-h" style="padding:22px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px">
+        <h2 id="nights-h" class="eyebrow" style="margin:0">Rooms needed, night by night</h2>
+        <span style="font-size:14px;color:#5A4D4B"><strong style="font-family:'Fraunces',Georgia,serif;font-size:22px;color:#241A1D">186</strong> room-nights · 412 guest-nights</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:end">
+        <sc-for list="{{nights}}" as="n" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;align-items:stretch;gap:8px">
+            <div style="display:flex;flex-direction:column;justify-content:flex-end;height:190px;border-bottom:2px solid #D3C6B4">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                <span style="font-family:'Fraunces',Georgia,serif;font-size:26px;font-weight:600;line-height:1">{{n.rooms}}</span>
+                <div style="width:100%;max-width:120px;height:{{n.h}}px;border-radius:10px 10px 0 0;background:#7C1D3E"></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:14.5px;font-weight:700">{{n.label}}</span><span style="font-size:12.5px;color:#6B5D5B">{{n.guests}} guests</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="margin:0;font-size:13.5px;color:#5A4D4B">Rooms per night, 19–22 Nov. Peak is Saturday, the Sangeet night.</p>
+    </section>
+
+    <!-- Requests -->
+    <section class="card" aria-labelledby="req-h" style="overflow:hidden">
+      <div style="padding:22px;display:flex;flex-direction:column;gap:16px">
+        <h2 id="req-h" class="eyebrow" style="margin:0">Stay requests</h2>
+        <div role="group" aria-label="Filter stay requests" style="display:flex;flex-wrap:wrap;gap:8px">
+          <button type="button" class="tab on" aria-pressed="true">All 38</button>
+          <button type="button" class="tab" aria-pressed="false">Awaiting a room 9</button>
+          <button type="button" class="tab" aria-pressed="false">No room count 6</button>
+          <button type="button" class="tab" aria-pressed="false">Confirmed 23</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th scope="col">Guest</th><th scope="col">People</th><th scope="col">Stay</th><th scope="col">Rooms</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <sc-for list="{{stays}}" as="s" hint-placeholder-count="6">
+              <tr>
+                <td><span style="font-weight:700">{{s.name}}</span></td>
+                <td>{{s.people}}</td>
+                <td style="white-space:nowrap">{{s.stay}}</td>
+                <td style="font-variant-numeric:tabular-nums">{{s.rooms}}</td>
+                <td><span class="pill {{s.cls}}">{{s.status}}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1300,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+const nav = [
+['Overview', 'M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 8h6V4h-6z', 'Host-Overview.dc.html'],
+['Schedule', 'M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z', 'Host-Overview.dc.html'],
+['Guests', 'M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 20v-1a3 3 0 0 0-2-2.8M15.5 4.3a3.5 3.5 0 0 1 0 6.4', 'Host-Overview.dc.html'],
+['Invitations', 'M3 6h18v12H3zM3 7l9 6 9-6', 'Host-Overview.dc.html'],
+['Responses', 'M5 12.5l4.5 4.5L19 7.5', 'Host-Overview.dc.html'],
+['Accommodation', 'M3 18v-9M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5', 'Host-Accommodation.dc.html'],
+['Meals', 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 1-3 4-3 7h3v11', 'Host-Overview.dc.html'],
+['Transport', 'M5 16V9l2-4h10l2 4v7M3 16h18v3H3zM7 12h.01M17 12h.01', 'Host-Overview.dc.html'],
+['Reports', 'M4 20V10M10 20V4M16 20v-7M22 20H2', 'Host-Overview.dc.html'],
+['Settings', 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4', 'Host-Overview.dc.html']
+].map(([label, d, href]) => ({ label, d, href, cls: label === 'Accommodation' ? 'on' : '', current: label === 'Accommodation' ? 'page' : 'false' }));
+const data = [['Thu 19', 8, 17], ['Fri 20', 78, 174], ['Sat 21', 82, 181], ['Sun 22', 18, 40]];
+const max = 82;
+const nights = data.map(([label, rooms, guests]) => ({ label, rooms, guests, h: Math.round((rooms / max) * 120) }));
+const stays = [
+{ name: 'The Sharma family', people: '3 of 4', stay: 'Fri 20 – Sun 22', rooms: '2', status: 'Confirmed', cls: 'ok' },
+{ name: 'The Iyer family', people: '2', stay: 'Fri 20 – Sun 22', rooms: '1', status: 'Awaiting a room', cls: 'wait' },
+{ name: 'Meera Kapoor', people: '1', stay: 'Thu 19 – Sun 22', rooms: '1', status: 'Awaiting a room', cls: 'wait' },
+{ name: 'Sam Fernandes', people: '1', stay: 'Fri 20 – Sun 22', rooms: '1', status: 'Confirmed', cls: 'ok' },
+{ name: 'The Menon family', people: '4', stay: 'Sat 21 – Sun 22', rooms: 'Not given', status: 'No room count', cls: 'miss' },
+{ name: 'Priya Desai', people: '2', stay: 'Fri 20 – Sun 22', rooms: 'Not given', status: 'No room count', cls: 'miss' }
+];
+return { nav, nights, stays };
+}
+}
+</script>
+</body>
+</html>

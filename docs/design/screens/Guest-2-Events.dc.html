@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Who's coming to what</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#FBF6EE}
+a{text-decoration:none}
+button{font-family:'DM Sans',system-ui,sans-serif}
+.seg{flex:1;min-width:0;height:44px;border-radius:10px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 4px;white-space:nowrap}
+.seg.a{background:#1B6B43;border-color:#1B6B43;color:#fff}
+.seg.m{background:#8A4F00;border-color:#8A4F00;color:#fff}
+.seg.n{background:#3A2E30;border-color:#3A2E30;color:#fff}
+.seg.a::before,.seg.m::before,.seg.n::before{content:'✓';font-weight:700}
+.seg:focus-visible,.linkbtn:focus-visible{outline:2px solid #7C1D3E;outline-offset:2px}
+.sum{margin:-4px 0 0;font-size:13.5px;font-weight:500;color:#5A4D4B}
+.sum.todo{color:#2F5597}
+.linkbtn{background:none;border:0;padding:0 4px;height:44px;color:#7C1D3E;font-size:14px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px}
+</style>
+</helmet>
+<div style="width:390px;min-height:1400px;box-sizing:border-box;display:flex;flex-direction:column;background:#FBF6EE;color:#241A1D;font-family:'DM Sans',system-ui,sans-serif">
+
+  <!-- Top: back + progress -->
+  <div style="padding:14px 20px 16px;background:#FFFEFB;border-bottom:1px solid #E8DFD2;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <a href="Main.dc.html" aria-label="Back to the invitation" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px;color:#241A1D">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span style="font-size:13px;font-weight:600;color:#6B5D5B">Step 1 of 4</span>
+    </div>
+    <ol aria-label="Progress" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+      <li><div style="height:5px;border-radius:3px;background:#7C1D3E"></div><span aria-current="step" style="display:block;margin-top:6px;font-size:12px;font-weight:700;color:#241A1D">Events</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#E8DFD2"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Food</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#E8DFD2"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Stay &amp; travel</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#E8DFD2"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Review</span></li>
+    </ol>
+  </div>
+
+  <div style="padding:24px 20px 28px;display:flex;flex-direction:column;gap:20px;flex:1">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <h1 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:28px;line-height:1.15">Who's coming to what?</h1>
+      <p style="margin:0;font-size:15px;line-height:1.45;color:#5A4D4B">Answer once for the whole family, or open an event to answer person by person. Not sure yet? Pick maybe and change it later.</p>
+    </div>
+
+    <!-- Party -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 4px;border-radius:999px;background:#F5E3E8;color:#5E1530;font-size:13.5px;font-weight:600"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:12px">RS</span>Rohit</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 4px;border-radius:999px;background:#F5E3E8;color:#5E1530;font-size:13.5px;font-weight:600"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:12px">NS</span>Neha</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 4px;border-radius:999px;background:#F5E3E8;color:#5E1530;font-size:13.5px;font-weight:600"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:12px">AS</span>Aarav</span>
+      <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 4px;border-radius:999px;background:#F5E3E8;color:#5E1530;font-size:13.5px;font-weight:600"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:12px">DS</span>Dadi</span>
+      <button type="button" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:999px;border:1.5px dashed #B8A992;background:transparent;color:#5A4D4B;font-size:13.5px;font-weight:600;cursor:pointer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a guest
+      </button>
+    </div>
+
+    <!-- Days -->
+    <sc-for list="{{days}}" as="day" hint-placeholder-count="3">
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <h2 style="margin:8px 0 0;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7C1D3E">{{day.label}}</h2>
+        <sc-for list="{{day.items}}" as="a" hint-placeholder-count="2">
+          <article style="background:#FFFEFB;border:1px solid #E8DFD2;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <h3 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px">{{a.name}}</h3>
+              <span style="font-size:14px;color:#6B5D5B;white-space:nowrap">{{a.time}}</span>
+            </div>
+            <p class="sum {{a.sumCls}}">{{a.summary}}</p>
+
+            <div role="group" aria-label="{{a.everyoneLabel}}" style="display:flex;gap:6px">
+              <sc-for list="{{a.everyone}}" as="o" hint-placeholder-count="3">
+                <button type="button" class="seg {{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button>
+              </sc-for>
+            </div>
+
+            <button type="button" class="linkbtn" onClick="{{a.toggle}}" aria-expanded="{{a.expanded}}">{{a.toggleLabel}}</button>
+
+            <sc-if value="{{a.expanded}}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:14px;border-top:1px solid #E8DFD2;padding-top:14px">
+                <sc-for list="{{a.people}}" as="p" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <span style="font-size:14px;font-weight:600">{{p.name}}</span>
+                    <div role="group" aria-label="{{p.groupLabel}}" style="display:flex;gap:6px">
+                      <sc-for list="{{p.options}}" as="o" hint-placeholder-count="3">
+                        <button type="button" class="seg {{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </section>
+    </sc-for>
+
+    <p style="margin:4px 0 0;font-size:13.5px;line-height:1.45;color:#2F5597;background:#E6ECF7;border-radius:12px;padding:12px 14px">Anything left blank reaches the hosts as <strong>no answer</strong>, not as a decline.</p>
+  </div>
+
+  <!-- Sticky action bar -->
+  <div style="position:sticky;bottom:0;padding:12px 20px 20px;background:#FFFEFB;border-top:1px solid #E8DFD2;display:flex;align-items:center;justify-content:space-between;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <span style="font-size:15px;font-weight:700">{{answeredCount}} of 6 events</span>
+      <span style="font-size:13px;color:#6B5D5B">answered</span>
+    </div>
+    <a href="Guest-3-Details.dc.html" style="display:flex;align-items:center;justify-content:center;gap:8px;height:50px;min-width:150px;padding:0 22px;border-radius:14px;background:#7C1D3E;color:#fff;font-size:16px;font-weight:600">Continue
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1400}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = {
+ppl: {
+welcome: { r: 'a', n: 'a', a: 'a', d: 'a' },
+haldi: { r: 'a', n: 'a', a: 'a', d: 'a' },
+mehendi: { r: null, n: null, a: null, d: null },
+sangeet: { r: 'a', n: 'a', a: 'm', d: 'n' },
+wedding: { r: 'a', n: 'a', a: 'a', d: 'a' },
+reception: { r: 'a', n: 'a', a: 'a', d: 'a' }
+},
+open: { sangeet: true }
+};
+}
+renderVals() {
+const people = [['r', 'Rohit Sharma'], ['n', 'Neha Sharma'], ['a', 'Aarav Sharma'], ['d', 'Dadi Sharma']];
+const opts = [['a', 'Attending'], ['m', 'Maybe'], ['n', 'Not attending']];
+const word = { a: 'attending', m: 'maybe', n: 'not attending' };
+const defs = [
+{ day: 'Friday 20 Nov', items: [['welcome', 'Welcome dinner', '7:00 PM']] },
+{ day: 'Saturday 21 Nov', items: [['haldi', 'Haldi', '10:00 AM'], ['mehendi', 'Mehendi', '2:00 PM'], ['sangeet', 'Sangeet', '7:00 PM']] },
+{ day: 'Sunday 22 Nov', items: [['wedding', 'Wedding ceremony', '11:00 AM'], ['reception', 'Reception', '7:00 PM']] }
+];
+const setAll = (id, v) => this.setState((s) => ({ ppl: { ...s.ppl, [id]: { r: v, n: v, a: v, d: v } } }));
+const setOne = (id, k, v) => this.setState((s) => ({ ppl: { ...s.ppl, [id]: { ...s.ppl[id], [k]: v } } }));
+let answered = 0;
+const days = defs.map((d) => ({
+label: d.day,
+items: d.items.map(([id, name, time]) => {
+const row = this.state.ppl[id];
+const vals = people.map(([k]) => row[k]);
+const complete = vals.every(Boolean);
+if (complete) answered += 1;
+const same = complete && vals.every((v) => v === vals[0]) ? vals[0] : null;
+const open = !!this.state.open[id];
+let summary = 'Not answered yet';
+if (same) { summary = 'All 4 ' + word[same]; }
+else if (vals.some(Boolean)) {
+const parts = ['a', 'm', 'n'].map((c) => [c, vals.filter((v) => v === c).length]).filter((x) => x[1]).map((x) => x[1] + ' ' + word[x[0]]);
+const blank = vals.filter((v) => !v).length;
+summary = parts.join(' · ') + (blank ? ' · ' + blank + ' blank' : '');
+}
+return {
+name, time, summary, sumCls: same || vals.some(Boolean) ? '' : 'todo',
+expanded: open,
+everyoneLabel: name + ' — everyone',
+toggleLabel: open ? 'Same answer for everyone' : 'Answer person by person',
+toggle: () => this.setState((s) => ({ open: { ...s.open, [id]: !s.open[id] } })),
+everyone: opts.map(([c, label]) => ({ label, cls: same === c ? c : '', pressed: same === c, pick: () => setAll(id, c) })),
+people: people.map(([k, pname]) => ({
+name: pname,
+groupLabel: name + ' — ' + pname,
+options: opts.map(([c, label]) => ({ label, cls: row[k] === c ? c : '', pressed: row[k] === c, pick: () => setOne(id, k, c) }))
+}))
+};
+})
+}));
+return { days, answeredCount: answered };
+}
+}
+</script>
+</body>
+</html>

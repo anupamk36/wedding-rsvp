@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Host events</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#FBF6EE}
+a{text-decoration:none;color:inherit}
+button{font-family:'DM Sans',system-ui,sans-serif}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;font-size:14.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.p{background:#7C1D3E;color:#fff;border:0}
+.tab{height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:14px;font-weight:600;cursor:pointer}
+.tab.on{background:#241A1D;border-color:#241A1D;color:#fff}
+.card{background:#FFFEFB;border:1px solid #E8DFD2;border-radius:18px}
+.ev:hover{border-color:#B8A992}
+.btn:focus-visible,.tab:focus-visible,.ev:focus-visible{outline:2px solid #7C1D3E;outline-offset:2px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7C1D3E}
+</style>
+</helmet>
+<div style="min-height:1000px;background:#FBF6EE;color:#241A1D;font-family:'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column">
+
+  <header style="border-bottom:1px solid #E8DFD2;background:#FBF6EE">
+    <div style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <a href="Host-Events.dc.html" style="font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;color:#5E1530">Gatherly</a>
+      <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:13px;font-weight:600">DH</span><span style="font-size:14px;font-weight:600">Demo Host</span></div>
+    </div>
+  </header>
+
+  <main style="width:100%;max-width:1160px;margin:0 auto;box-sizing:border-box;padding:40px 24px 64px;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h1 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:36px;line-height:1.1;letter-spacing:-0.01em">Your events</h1>
+        <p style="margin:0;font-size:15px;color:#5A4D4B">Five events, all in one place. Each one keeps its own guests, questions and extras.</p>
+      </div>
+      <a class="btn p" href="Landing.dc.html">New event</a>
+    </div>
+
+    <div role="group" aria-label="Filter by type" style="display:flex;flex-wrap:wrap;gap:8px">
+      <button type="button" class="tab on" aria-pressed="true">All 5</button>
+      <button type="button" class="tab" aria-pressed="false">Weddings</button>
+      <button type="button" class="tab" aria-pressed="false">Trips</button>
+      <button type="button" class="tab" aria-pressed="false">Birthdays</button>
+      <button type="button" class="tab" aria-pressed="false">Polls</button>
+      <button type="button" class="tab" aria-pressed="false">Dinners</button>
+    </div>
+
+    <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:18px">
+      <sc-for list="{{events}}" as="e" hint-placeholder-count="5">
+        <li>
+          <a class="card ev" href="Host-Overview.dc.html" style="height:100%;box-sizing:border-box;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700;background:{{e.bg}};color:{{e.fg}}">{{e.kind}}</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:{{e.statusFg}}"><span aria-hidden="true" style="width:7px;height:7px;border-radius:50%;background:{{e.statusFg}}"></span>{{e.status}}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h2 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:22px;line-height:1.2">{{e.name}}</h2>
+              <p style="margin:0;font-size:14px;color:#5A4D4B">{{e.when}}</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
+              <div style="display:flex;justify-content:space-between;font-size:13.5px"><span style="font-weight:600">{{e.replied}}</span><span style="color:#5A4D4B">{{e.pct}}%</span></div>
+              <div role="img" aria-label="{{e.replied}}" style="height:8px;border-radius:4px;background:#E8DFD2;overflow:hidden"><div style="width:{{e.pct}}%;height:100%;background:{{e.bar}}"></div></div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{e.facts}}" as="f" hint-placeholder-count="2">
+                <span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:10px;background:#F6EFE3;font-size:13px;font-weight:600;color:#3E3431">{{f}}</span>
+              </sc-for>
+            </div>
+          </a>
+        </li>
+      </sc-for>
+    </ul>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1300,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+const wed = { kind: 'Wedding', bg: '#F5E3E8', fg: '#5E1530', bar: '#7C1D3E' };
+const trip = { kind: 'Trip', bg: '#E1F5EC', fg: '#0B4A38', bar: '#046C4E' };
+const bday = { kind: 'Birthday', bg: '#FDF0DC', fg: '#6B2F08', bar: '#92400E' };
+const poll = { kind: 'Sports poll', bg: '#E2F1FB', fg: '#0A4466', bar: '#075985' };
+const dinner = { kind: 'Dinner', bg: '#EFE8DD', fg: '#3E3431', bar: '#334155' };
+const live = { status: 'Live', statusFg: '#1B6B43' };
+return {
+events: [
+{ ...wed, ...live, name: "Purva & Anupam's Wedding", when: 'Fri 20 – Sun 22 Nov · Lakeside Palace, Udaipur', replied: '151 of 214 people replied', pct: 71, facts: ['186 room-nights', '63 awaiting reply', '2 late changes'] },
+{ ...trip, ...live, name: 'Goa weekend', when: 'Fri 12 – Sun 14 Dec · Villa near Assagao', replied: '9 of 12 people replied', pct: 75, facts: ['6 rooms', '4 airport pickups'] },
+{ ...bday, ...live, name: 'Aarav turns thirty', when: 'Sat 5 Dec · Terrace at Bandra', replied: '34 of 45 people replied', pct: 76, facts: ['31 attending', '5 vegetarian', '9 plus-ones'] },
+{ ...poll, ...live, name: 'Weekend football', when: 'Sat 28 – Sun 29 Nov · 3 candidate slots', replied: '11 of 16 people replied', pct: 69, facts: ['Best: Sat 5 PM, 9 available', 'Needs 10'] },
+{ ...dinner, status: 'Draft', statusFg: '#5A4D4B', name: 'Friday supper club', when: 'Fri 18 Dec · 7:30 PM', replied: 'No guests added yet', pct: 0, facts: ['Add guests to start'] }
+]
+};
+}
+}
+</script>
+</body>
+</html>

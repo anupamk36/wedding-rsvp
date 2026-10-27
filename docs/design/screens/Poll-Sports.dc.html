@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sports availability poll</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#F4F8FB}
+a{text-decoration:none}
+button{font-family:'DM Sans',system-ui,sans-serif}
+.seg{flex:1;min-width:0;height:44px;border-radius:10px;border:1.5px solid #B4C8D8;background:#FFFFFF;color:#0C2D48;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 4px;white-space:nowrap}
+.seg.a{background:#075985;border-color:#075985;color:#fff}
+.seg.m{background:#8A4F00;border-color:#8A4F00;color:#fff}
+.seg.n{background:#3A2E30;border-color:#3A2E30;color:#fff}
+.seg.a::before,.seg.m::before,.seg.n::before{content:'✓';font-weight:700}
+.seg:focus-visible,.go:focus-visible{outline:2px solid #075985;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:390px;height:960px;box-sizing:border-box;display:flex;flex-direction:column;background:#F4F8FB;color:#0C2D48;font-family:'DM Sans',system-ui,sans-serif;overflow:hidden">
+
+  <div style="position:relative;background:#0C2D48;color:#F4F8FB;padding:40px 24px 30px;overflow:hidden">
+    <div aria-hidden="true" style="position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(207,230,244,0.28)"></div>
+    <div aria-hidden="true" style="position:absolute;right:30px;top:-70px;width:1.5px;height:220px;background:rgba(207,230,244,0.18)"></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:12px">
+      <span style="align-self:flex-start;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#CFE6F4;color:#0C2D48;font-size:13px;font-weight:700">Availability poll · Hi Sam</span>
+      <h1 style="margin:14px 0 0;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:40px;line-height:1.05;letter-spacing:-0.02em">Weekend football</h1>
+      <p style="margin:0;font-size:15px;line-height:1.45;color:rgba(244,248,251,0.85)">Hosted by Rohan. We play as soon as one slot has 10 people.</p>
+    </div>
+  </div>
+
+  <div style="flex:1;padding:24px 20px 0;display:flex;flex-direction:column;gap:18px;overflow:hidden">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h2 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:26px;line-height:1.15">When can you play?</h2>
+      <p style="margin:0;font-size:15px;line-height:1.45;color:#34536B">Mark every slot that could work. <strong>If needed</strong> means you'll come if we're short. Blank is not a no.</p>
+    </div>
+
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="3">
+      <article style="background:#fff;border:1px solid #D2E0EB;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <h3 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px">{{s.name}}</h3>
+          <span style="font-size:13.5px;color:#34536B;white-space:nowrap">{{s.when}}</span>
+        </div>
+        <div role="group" aria-label="{{s.name}}" style="display:flex;gap:6px">
+          <sc-for list="{{s.opts}}" as="o" hint-placeholder-count="3">
+            <button type="button" class="seg {{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button>
+          </sc-for>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+
+  <div style="padding:12px 20px 20px;background:#fff;border-top:1px solid #D2E0EB;display:flex;flex-direction:column;gap:8px">
+    <a class="go" href="Poll-Sports.dc.html" style="display:flex;align-items:center;justify-content:center;height:54px;border-radius:14px;background:#075985;color:#fff;font-size:16px;font-weight:600">Send availability</a>
+    <p style="margin:0;text-align:center;font-size:13px;color:#34536B">{{answered}} of 3 slots answered · change it any time</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":960}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { v: { s1: 'a', s2: 'm', s3: null } };
+}
+renderVals() {
+const defs = [['s1', 'Morning slot', 'Sat 7:00 AM'], ['s2', 'Evening slot', 'Sat 5:00 PM'], ['s3', 'Next morning slot', 'Sun 7:00 AM']];
+const opts = [['a', 'Available'], ['m', 'If needed'], ['n', 'Unavailable']];
+return {
+answered: defs.filter(([id]) => this.state.v[id]).length,
+slots: defs.map(([id, name, when]) => ({
+name, when,
+opts: opts.map(([c, label]) => ({
+label, cls: this.state.v[id] === c ? c : '', pressed: this.state.v[id] === c,
+pick: () => this.setState((s) => ({ v: { ...s.v, [id]: c } }))
+}))
+}))
+};
+}
+}
+</script>
+</body>
+</html>

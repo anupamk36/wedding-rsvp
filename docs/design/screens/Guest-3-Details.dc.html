@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Food and access</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400&display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',system-ui,sans-serif;background:#FBF6EE}
+a{text-decoration:none}
+button,input,textarea{font-family:'DM Sans',system-ui,sans-serif}
+.chip{height:44px;padding:0 14px;border-radius:999px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:#F5E3E8;border-color:#7C1D3E;color:#5E1530;font-weight:700}
+.chip.on::before{content:'✓'}
+.chip:focus-visible,.field:focus-visible,.ghost:focus-visible{outline:2px solid #7C1D3E;outline-offset:2px}
+.field{box-sizing:border-box;width:100%;height:48px;border-radius:12px;border:1.5px solid #D3C6B4;background:#FFFEFB;padding:0 14px;font-size:15px;color:#241A1D}
+.ghost{background:none;border:0;height:44px;padding:0 4px;color:#7C1D3E;font-size:14px;font-weight:600;cursor:pointer;text-align:left}
+</style>
+</helmet>
+<div style="width:390px;min-height:1240px;box-sizing:border-box;display:flex;flex-direction:column;background:#FBF6EE;color:#241A1D;font-family:'DM Sans',system-ui,sans-serif">
+
+  <div style="padding:14px 20px 16px;background:#FFFEFB;border-bottom:1px solid #E8DFD2;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <a href="Guest-2-Events.dc.html" aria-label="Back to events" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px;color:#241A1D">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span style="font-size:13px;font-weight:600;color:#6B5D5B">Step 2 of 4</span>
+    </div>
+    <ol aria-label="Progress" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+      <li><div style="height:5px;border-radius:3px;background:#7C1D3E"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Events</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#7C1D3E"></div><span aria-current="step" style="display:block;margin-top:6px;font-size:12px;font-weight:700;color:#241A1D">Food</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#E8DFD2"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Stay &amp; travel</span></li>
+      <li><div style="height:5px;border-radius:3px;background:#E8DFD2"></div><span style="display:block;margin-top:6px;font-size:12px;color:#6B5D5B">Review</span></li>
+    </ol>
+  </div>
+
+  <div style="padding:24px 20px 28px;display:flex;flex-direction:column;gap:18px;flex:1">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <h1 style="margin:0;font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:28px;line-height:1.15">Food and access</h1>
+      <p style="margin:0;font-size:15px;line-height:1.45;color:#5A4D4B">So the caterers and venue plan for everyone. Skip anyone with no needs.</p>
+    </div>
+
+    <sc-for list="{{people}}" as="p" hint-placeholder-count="4">
+      <section style="background:#FFFEFB;border:1px solid #E8DFD2;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#7C1D3E;color:#fff;font-size:12px;font-weight:600">{{p.initials}}</span>
+          <h2 style="margin:0;font-size:16px;font-weight:700">{{p.name}}</h2>
+        </div>
+        <div role="group" aria-label="{{p.groupLabel}}" style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{p.chips}}" as="c" hint-placeholder-count="4">
+            <button type="button" class="chip {{c.cls}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.label}}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{p.hasNote}}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="{{p.noteId}}" style="font-size:13.5px;font-weight:600">Access needs</label>
+            <input id="{{p.noteId}}" class="field" type="text" value="Step-free access; ground-floor room">
+          </div>
+        </sc-if>
+        <sc-if value="{{p.noNote}}" hint-placeholder-val="{{ true }}">
+          <button type="button" class="ghost">+ Add an access or allergy note</button>
+        </sc-if>
+      </section>
+    </sc-for>
+
+    <section style="background:#FFFEFB;border:1px solid #E8DFD2;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+        <label for="song" style="font-size:16px;font-weight:700">A song for the Sangeet floor?</label>
+        <span style="font-size:12.5px;color:#6B5D5B;white-space:nowrap">Optional</span>
+      </div>
+      <input id="song" class="field" type="text" placeholder="Title and artist">
+    </section>
+  </div>
+
+  <div style="position:sticky;bottom:0;padding:12px 20px 20px;background:#FFFEFB;border-top:1px solid #E8DFD2;display:flex;align-items:center;justify-content:space-between;gap:14px">
+    <a href="Guest-2-Events.dc.html" style="display:flex;align-items:center;justify-content:center;height:50px;padding:0 22px;border-radius:14px;border:1.5px solid #D3C6B4;background:#FFFEFB;color:#241A1D;font-size:16px;font-weight:600">Back</a>
+    <a href="Guest-4-Stay-Travel.dc.html" style="display:flex;align-items:center;justify-content:center;gap:8px;height:50px;min-width:150px;padding:0 22px;border-radius:14px;background:#7C1D3E;color:#fff;font-size:16px;font-weight:600">Continue
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { sel: { rohit: [], neha: ['Vegetarian'], aarav: ['Vegetarian'], dadi: ['Vegetarian', 'Jain'] } };
+}
+renderVals() {
+const tags = ['Vegetarian', 'Vegan', 'Jain', 'Eggetarian', 'Gluten free', 'Nut allergy', 'Dairy free', 'Halal'];
+const who = [['rohit', 'Rohit Sharma', 'RS'], ['neha', 'Neha Sharma', 'NS'], ['aarav', 'Aarav Sharma', 'AS'], ['dadi', 'Dadi Sharma', 'DS']];
+const people = who.map(([id, name, initials]) => ({
+name, initials,
+groupLabel: name + ' — dietary needs',
+noteId: 'note-' + id,
+hasNote: id === 'dadi',
+noNote: id !== 'dadi',
+chips: tags.map((label) => {
+const on = this.state.sel[id].includes(label);
+return {
+label, cls: on ? 'on' : '', pressed: on,
+pick: () => this.setState((s) => {
+const cur = s.sel[id];
+return { sel: { ...s.sel, [id]: cur.includes(label) ? cur.filter((x) => x !== label) : [...cur, label] } };
+})
+};
+})
+}));
+return { people };
+}
+}
+</script>
+</body>
+</html>
