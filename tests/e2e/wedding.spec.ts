@@ -83,7 +83,7 @@ test("host plans a wedding, a family RSVPs, plans change, and a revoked link sto
   expect(meals.meals.find((m: { name: string; serviceDate: string }) => m.name === "Lunch" && m.serviceDate === isoDate(42)).confirmed).toBe(3);
 
   await page.getByRole("link", { name: "Overview", exact: true }).click();
-  await expect(page.getByRole("row", { name: /Wedding ceremony/ })).toContainText("3");
+  await expect(page.getByRole("img", { name: /^Wedding ceremony: 3 confirmed, 0 maybe, 1 declined, 0 no answer$/ })).toBeVisible();
 
   // Guest changes plans: Parent 2 now joins the reception.
   await guest.getByRole("button", { name: "Change my response" }).click();

@@ -12,7 +12,7 @@ import { createGroup, createGuest, createHousehold, importGuests, setGroupMember
 import { createInvitation, resolveInvitationToken, revokeInvitation } from "@/server/modules/invitations";
 import { createMeal } from "@/server/modules/logistics";
 import { enqueueNotification, processDueNotifications } from "@/server/modules/notifications";
-import { getAccommodationReport, getAttendeeList, getEventSummary, getMealReport } from "@/server/modules/reporting";
+import { getAccommodationReport, getAttendeeList, getDashboardCards, getEventSummary, getMealReport } from "@/server/modules/reporting";
 import { getRsvpView, submitResponse, type ResponsePayload } from "@/server/modules/rsvp";
 import { createTestDb, createUser } from "../support/db";
 
@@ -167,6 +167,20 @@ describe("multi-day wedding journey", () => {
     expect(s.recent[0].changes[0]).toMatchObject({ guest: "Parent 1" });
     // Accommodation was resubmitted unchanged and stays a single request.
     expect((await getAccommodationReport(db, host.id, eventId)).items.filter((i) => i.active)).toHaveLength(1);
+  });
+
+  it("summarises the event for the dashboard in line with the full report", async () => {
+    const [card] = await getDashboardCards(db, host.id);
+    const s = await getEventSummary(db, host.id, eventId);
+    const acc = await getAccommodationReport(db, host.id, eventId);
+    expect(card).toMatchObject({
+      id: eventId,
+      invitedPeople: s.totals.invitedPeople,
+      respondedPeople: s.totals.respondedPeople,
+      pendingPeople: s.totals.pendingPeople,
+      lateChanges: s.totals.lateChanges,
+      roomNights: acc.totals.roomNights,
+    });
   });
 
   it("rejects stale versions instead of silently overwriting", async () => {

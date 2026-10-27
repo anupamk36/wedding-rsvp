@@ -9,7 +9,7 @@ import {
   summarizeAttendance,
   type AttendanceStatus,
 } from "@/domain/calculations";
-import { parseSettings } from "@/domain/settings";
+import { parseSettings, type EventType } from "@/domain/settings";
 import { utcToZoned } from "@/lib/dates";
 import { queryRows, type DbExecutor } from "../db/connect";
 import {
@@ -17,6 +17,7 @@ import {
   accommodationRequestGuests,
   accommodationRequests,
   activityAttendance,
+  events as eventsTable,
   guests,
   households,
   invitations,
@@ -28,7 +29,7 @@ import {
   transportRequests,
 } from "../db/schema";
 import { requireEventAccess } from "./access";
-import { listActivities } from "./events";
+import { listActivities, listEventsForUser } from "./events";
 import { invitationScopeSql } from "./invitations";
 import type { ChangeEntry } from "./rsvp";
 
@@ -431,4 +432,149 @@ export async function getTransportReport(db: DbExecutor, userId: string, eventId
       unassigned: active.filter((i) => i.status === "requested").length,
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard cards
+// ---------------------------------------------------------------------------
+
+export interface DashboardCard {
+  id: string;
+  name: string;
+  eventType: EventType;
+  startDate: string;
+  endDate: string;
+  status: "draft" | "published" | "archived";
+  venueName: string | null;
+  role: "owner" | "organizer" | "viewer";
+  timezone: string;
+  availabilityMode: boolean;
+  minParticipants: number | null;
+  guestCount: number;
+  invitedPeople: number;
+  respondedPeople: number;
+  pendingPeople: number;
+  lateChanges: number;
+  attendingPeople: number;
+  vegetarian: number;
+  plusOnes: number;
+  rooms: number;
+  roomNights: number;
+  pickups: number;
+  bestSlot: { name: string; startAt: string; available: number } | null;
+}
+
+/**
+ * Per-event reply progress and a few type-specific facts for every event the
+ * user can see, in a handful of grouped queries (not one summary per event).
+ */
+export async function getDashboardCards(db: DbExecutor, userId: string): Promise<DashboardCard[]> {
+  const events = await listEventsForUser(db, userId);
+  if (!events.length) return [];
+  const ids = sql.join(
+    events.map((e) => sql`${e.id}`),
+    sql`, `,
+  );
+  const scope = sql`(
+    select i.event_id, i.id as invitation_id, g.id as guest_id, i.response_status
+      from invitations i join guests g on g.id = i.guest_id
+     where i.status <> 'revoked' and i.event_id in (${ids})
+    union
+    select i.event_id, i.id, g.id, i.response_status
+      from invitations i join guests g on g.household_id = i.household_id and g.plus_one_of_invitation_id is null
+     where i.household_id is not null and i.status <> 'revoked' and i.event_id in (${ids})
+    union
+    select i.event_id, i.id, g.id, i.response_status
+      from invitations i join guests g on g.plus_one_of_invitation_id = i.id
+     where i.status <> 'revoked' and i.event_id in (${ids})
+  )`;
+
+  type Row = Record<string, string | number | null>;
+  const [people, attending, logistics, late, slots, details] = await Promise.all([
+    queryRows<Row>(
+      db,
+      sql`select s.event_id,
+                 count(distinct s.guest_id)::int as invited,
+                 count(distinct s.guest_id) filter (where s.response_status in ('submitted', 'updated'))::int as responded,
+                 count(distinct s.guest_id) filter (where g.plus_one_of_invitation_id is not null)::int as plus_ones
+            from ${scope} s join guests g on g.id = s.guest_id
+           group by s.event_id`,
+    ),
+    queryRows<Row>(
+      db,
+      sql`select s.event_id,
+                 count(distinct s.guest_id)::int as attending,
+                 count(distinct s.guest_id) filter (where 'vegetarian' = any(g.dietary))::int as vegetarian
+            from ${scope} s
+            join activity_attendance aa on aa.guest_id = s.guest_id and aa.status = 'attending'
+            join guests g on g.id = s.guest_id
+           group by s.event_id`,
+    ),
+    queryRows<Row>(
+      db,
+      sql`select e.id as event_id,
+                 coalesce((select sum(r.room_count_requested)::int from accommodation_requests r join invitations i on i.id = r.invitation_id
+                            where r.event_id = e.id and r.status = 'requested' and i.status <> 'revoked'), 0) as rooms,
+                 coalesce((select sum(r.room_count_requested * (r.departure_date - r.arrival_date))::int from accommodation_requests r join invitations i on i.id = r.invitation_id
+                            where r.event_id = e.id and r.status = 'requested' and i.status <> 'revoked'), 0) as room_nights,
+                 (select count(*)::int from transport_requests t join invitations i on i.id = t.invitation_id
+                   where t.event_id = e.id and t.status <> 'cancelled' and i.status <> 'revoked') as pickups
+            from events e where e.id in (${ids})`,
+    ),
+    queryRows<Row>(
+      db,
+      sql`select event_id, count(*)::int as late from invitations
+           where event_id in (${ids}) and status <> 'revoked' and has_late_changes group by event_id`,
+    ),
+    queryRows<Row>(
+      db,
+      sql`select a.event_id, a.name, a.start_at,
+                 count(distinct aa.guest_id) filter (where aa.status = 'attending' and aa.guest_id in (select guest_id from ${scope} s2 where s2.event_id = a.event_id))::int as available
+            from activities a left join activity_attendance aa on aa.activity_id = a.id
+           where a.event_id in (${ids}) and a.attendance_requested
+           group by a.id`,
+    ),
+    db.select({ id: eventsTable.id, timezone: eventsTable.timezone, settings: eventsTable.settings }).from(eventsTable).where(inArray(eventsTable.id, events.map((e) => e.id))),
+  ]);
+
+  const by = (rows: Row[]) => new Map(rows.map((r) => [String(r.event_id), r]));
+  const p = by(people);
+  const a = by(attending);
+  const l = by(logistics);
+  const lt = by(late);
+  const d = new Map(details.map((r) => [r.id, r]));
+
+  return events.map((e) => {
+    const settings = parseSettings(d.get(e.id)?.settings);
+    const invited = Number(p.get(e.id)?.invited ?? 0);
+    const responded = Number(p.get(e.id)?.responded ?? 0);
+    const best = slots
+      .filter((s) => s.event_id === e.id)
+      .sort((x, y) => Number(y.available) - Number(x.available))[0];
+    return {
+      id: e.id,
+      name: e.name,
+      eventType: e.eventType,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      status: e.status,
+      venueName: e.venueName,
+      role: e.role,
+      timezone: d.get(e.id)?.timezone ?? "UTC",
+      availabilityMode: settings.availabilityMode,
+      minParticipants: settings.minParticipants,
+      guestCount: e.guestCount,
+      invitedPeople: invited,
+      respondedPeople: responded,
+      pendingPeople: invited - responded,
+      lateChanges: Number(lt.get(e.id)?.late ?? 0),
+      attendingPeople: Number(a.get(e.id)?.attending ?? 0),
+      vegetarian: Number(a.get(e.id)?.vegetarian ?? 0),
+      plusOnes: Number(p.get(e.id)?.plus_ones ?? 0),
+      rooms: Number(l.get(e.id)?.rooms ?? 0),
+      roomNights: Number(l.get(e.id)?.room_nights ?? 0),
+      pickups: Number(l.get(e.id)?.pickups ?? 0),
+      bestSlot: settings.availabilityMode && best ? { name: String(best.name), startAt: new Date(String(best.start_at)).toISOString(), available: Number(best.available) } : null,
+    };
+  });
 }
