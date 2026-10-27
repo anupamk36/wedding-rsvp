@@ -24,7 +24,7 @@ export function SubmitButton({
 }: {
   children: ReactNode;
   pendingText?: string;
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "ghost" | "link" | "danger";
   size?: "sm" | "md";
   className?: string;
   disabled?: boolean;
@@ -40,14 +40,14 @@ export function SubmitButton({
 export function FormMessage({ state }: { state: ActionState }) {
   if (state.error) {
     return (
-      <div role="alert" className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
+      <div role="alert" className="rounded-xl bg-danger-soft px-4 py-3 text-sm font-medium text-danger">
         {state.error}
       </div>
     );
   }
   if (state.message) {
     return (
-      <div role="status" className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">
+      <div role="status" className="rounded-xl bg-success-soft px-4 py-3 text-sm font-medium text-success-ink">
         {state.message}
       </div>
     );
@@ -67,8 +67,11 @@ export function ActionForm({
   onSuccess,
   render,
   id,
+  confirm,
 }: {
   id?: string;
+  /** Ask before submitting (e.g. before emailing many people). */
+  confirm?: string;
   action: FormAction;
   children?: ReactNode;
   className?: string;
@@ -88,7 +91,13 @@ export function ActionForm({
     }
   }, [state, resetOnSuccess, onSuccess]);
   return (
-    <form id={id} ref={ref} action={formAction} className={cx("space-y-4", className)}>
+    <form
+      id={id}
+      ref={ref}
+      action={formAction}
+      className={cx("space-y-4", className)}
+      onSubmit={confirm ? (e) => !window.confirm(confirm) && e.preventDefault() : undefined}
+    >
       <FormMessage state={state} />
       {children}
       {render?.(state)}
@@ -108,7 +117,7 @@ export function ActionButton({
   action: () => Promise<void>;
   children: ReactNode;
   confirm?: string;
-  variant?: "primary" | "secondary" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "ghost" | "link" | "danger";
   size?: "sm" | "md";
   pendingText?: string;
 }) {
@@ -162,8 +171,8 @@ export function Disclosure({
   className?: string;
 }) {
   return (
-    <details open={defaultOpen} className={cx("group rounded-xl border border-border bg-surface", className)}>
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-5 py-3 font-medium [&::-webkit-details-marker]:hidden">
+    <details open={defaultOpen} className={cx("group rounded-[18px] border border-border bg-surface", className)}>
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-5 py-3 font-semibold [&::-webkit-details-marker]:hidden">
         {summary}
         <span aria-hidden className="text-muted transition-transform group-open:rotate-180">
           ▾
