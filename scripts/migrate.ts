@@ -4,7 +4,8 @@ import "./env";
 import { createDatabase, MIGRATIONS_FOLDER } from "../src/server/db/connect";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
+  // Prefer a direct connection for DDL; pooled endpoints (e.g. Neon's PgBouncer) can break migrations.
+  const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
   if (url) {
     const { Pool } = await import("pg");
     const { drizzle } = await import("drizzle-orm/node-postgres");
