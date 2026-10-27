@@ -3,6 +3,7 @@ import { queryRows, type DbExecutor } from "../db/connect";
 import { invitations, notificationJobs } from "../db/schema";
 import { getEmailProvider, type EmailMessage } from "../adapters/email";
 import { invitationUrl } from "./invitations";
+import { appUrlOrLocal } from "../lib/app-url";
 
 const MAX_ATTEMPTS = 5;
 
@@ -35,7 +36,7 @@ function escapeHtml(s: string): string {
 }
 
 function appUrl(path: string) {
-  return `${(process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "")}${path}`;
+  return `${appUrlOrLocal()}${path}`;
 }
 
 async function render(db: DbExecutor, job: typeof notificationJobs.$inferSelect): Promise<EmailMessage | null> {

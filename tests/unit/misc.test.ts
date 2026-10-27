@@ -97,3 +97,16 @@ describe("settings and edit policy", () => {
     expect(editLock(future, { ...s, allowGuestEdits: false }, { responseStatus: "pending" }).lockedReason).toBeNull();
   });
 });
+
+describe("app URL resolution", () => {
+  it("prefers an explicit APP_URL", async () => {
+    const { getAppUrl } = await import("@/server/lib/app-url");
+    expect(getAppUrl({ APP_URL: "https://rsvp.example.com/", VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "x.vercel.app" })).toBe("https://rsvp.example.com");
+  });
+  it("uses the production domain on Vercel production and the deployment URL on previews", async () => {
+    const { getAppUrl } = await import("@/server/lib/app-url");
+    expect(getAppUrl({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "wedding.example.com", VERCEL_URL: "abc.vercel.app" })).toBe("https://wedding.example.com");
+    expect(getAppUrl({ VERCEL_ENV: "preview", VERCEL_BRANCH_URL: "app-git-feat.vercel.app", VERCEL_URL: "abc.vercel.app" })).toBe("https://app-git-feat.vercel.app");
+    expect(getAppUrl({})).toBeNull();
+  });
+});

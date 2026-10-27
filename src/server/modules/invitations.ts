@@ -13,6 +13,7 @@ import { decrypt, encrypt, generateToken, sha256 } from "../lib/crypto";
 import { conflict, invalid, isUniqueViolation, notFound } from "../lib/errors";
 import { requireEventAccess } from "./access";
 import { audit } from "./audit";
+import { appUrlOrLocal } from "../lib/app-url";
 
 export type InvitationRow = typeof invitations.$inferSelect;
 
@@ -75,8 +76,7 @@ function newToken() {
 }
 
 export function invitationUrl(tokenCiphertext: string): string {
-  const base = (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  return `${base}/i/${decrypt(tokenCiphertext)}`;
+  return `${appUrlOrLocal()}/i/${decrypt(tokenCiphertext)}`;
 }
 
 /** Like invitationUrl, but null when the stored token can't be decrypted (e.g. APP_SECRET changed). */

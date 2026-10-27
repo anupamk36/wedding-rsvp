@@ -5,11 +5,13 @@ import { connection } from "next/server";
 import { cache } from "react";
 import { getDb } from "../db/client";
 import { createSession, invalidateSession, validateSession, type SessionUser } from "../modules/identity";
+import { getAppUrl } from "../lib/app-url";
 
 // Secure whenever the app is served over HTTPS. A production build served over plain
 // HTTP (e.g. a local container at http://localhost:3000) needs a non-Secure cookie,
 // or browsers would drop it.
-const secure = process.env.APP_URL ? process.env.APP_URL.startsWith("https://") : process.env.NODE_ENV === "production";
+const appUrl = getAppUrl();
+const secure = appUrl ? appUrl.startsWith("https://") : process.env.NODE_ENV === "production";
 // __Host- cookies must be Secure, path=/ and host-only, which pins them to this origin.
 export const SESSION_COOKIE = secure ? "__Host-gatherly_session" : "gatherly_session";
 
