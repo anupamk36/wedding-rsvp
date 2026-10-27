@@ -13,6 +13,23 @@ export async function queryRows<T>(db: DbExecutor, query: SQL): Promise<T[]> {
   return result.rows;
 }
 
+/**
+ * pg treats sslmode=require as verify-full today but will switch to libpq
+ * semantics (no certificate check) in its next major. Pin the secure behaviour.
+ */
+export function normalizeSslMode(url: string): string {
+  return url.replace(/([?&])sslmode=(prefer|require|verify-ca)(?=&|$)/, "$1sslmode=verify-full");
+}
+
+/** True for databases on this machine (or the local Docker network). */
+export function isLocalDatabaseUrl(url: string): boolean {
+  try {
+    return ["localhost", "127.0.0.1", "::1", "db"].includes(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
 export const MIGRATIONS_FOLDER = path.join(process.cwd(), "drizzle");
 
 type Env = Record<string, string | undefined>;
@@ -28,7 +45,7 @@ export async function createDatabase(env: Env): Promise<Database> {
     const { Pool } = await import("pg");
     const { drizzle } = await import("drizzle-orm/node-postgres");
     const pool = new Pool({
-      connectionString: url,
+      connectionString: normalizeSslMode(url),
       max: Number(env.DATABASE_POOL_MAX ?? 10),
       ssl: env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : undefined,
     });

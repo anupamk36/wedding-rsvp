@@ -110,3 +110,13 @@ describe("app URL resolution", () => {
     expect(getAppUrl({})).toBeNull();
   });
 });
+
+describe("database URL helpers", () => {
+  it("pins sslmode to verify-full and recognises local databases", async () => {
+    const { normalizeSslMode, isLocalDatabaseUrl } = await import("@/server/db/connect");
+    expect(normalizeSslMode("postgres://u:p@h.neon.tech/db?sslmode=require&channel_binding=require")).toBe("postgres://u:p@h.neon.tech/db?sslmode=verify-full&channel_binding=require");
+    expect(normalizeSslMode("postgres://u:p@localhost/db")).toBe("postgres://u:p@localhost/db");
+    expect(isLocalDatabaseUrl("postgres://gatherly@db:5432/gatherly")).toBe(true);
+    expect(isLocalDatabaseUrl("postgres://u:p@ep-x.ap-southeast-1.aws.neon.tech/neondb")).toBe(false);
+  });
+});

@@ -4,7 +4,7 @@
 import "./env";
 import { performance } from "node:perf_hooks";
 import { eq } from "drizzle-orm";
-import { createDatabase } from "../src/server/db/connect";
+import { createDatabase, isLocalDatabaseUrl } from "../src/server/db/connect";
 import { invitations } from "../src/server/db/schema";
 import { createEvent, deleteEvent, listActivities } from "../src/server/modules/events";
 import { importGuests } from "../src/server/modules/guests";
@@ -29,6 +29,9 @@ async function time<T>(label: string, runs: number, fn: () => Promise<T>) {
 
 async function main() {
   if (process.env.NODE_ENV === "production") throw new Error("Do not run against production.");
+  if (process.env.DATABASE_URL && !isLocalDatabaseUrl(process.env.DATABASE_URL) && process.env.ALLOW_REMOTE_DATABASE !== "true") {
+    throw new Error("DATABASE_URL points at a remote database (check .env.local). Set ALLOW_REMOTE_DATABASE=true if you really mean it.");
+  }
   const db = await createDatabase(process.env);
   const host = await signup(db, { name: "Bench", email: `bench-${Date.now()}@example.com`, password: "bench-password-123" });
   const event = await createEvent(db, host.id, { name: "Bench wedding", eventType: "wedding", startDate: "2027-01-10", endDate: "2027-01-12" });

@@ -2,7 +2,7 @@
 // households, invitations and a few responses. Safe to run more than once.
 import "./env";
 import { eq, sql } from "drizzle-orm";
-import { createDatabase } from "../src/server/db/connect";
+import { createDatabase, isLocalDatabaseUrl } from "../src/server/db/connect";
 import { users } from "../src/server/db/schema";
 import { addDays } from "../src/lib/dates";
 import { createEvent, listActivities, updateEventSettings } from "../src/server/modules/events";
@@ -17,6 +17,9 @@ const DEMO_PASSWORD = process.env.SEED_PASSWORD ?? "demo-password-123";
 
 async function main() {
   if (process.env.NODE_ENV === "production" && process.env.ALLOW_SEED !== "true") throw new Error("Refusing to seed production.");
+  if (process.env.DATABASE_URL && !isLocalDatabaseUrl(process.env.DATABASE_URL) && process.env.ALLOW_REMOTE_DATABASE !== "true") {
+    throw new Error("DATABASE_URL points at a remote database (check .env.local). Set ALLOW_REMOTE_DATABASE=true if you really mean it.");
+  }
   const db = await createDatabase(process.env);
   const [existing] = await db.select().from(users).where(sql`lower(${users.email}) = ${DEMO_EMAIL}`);
   const host = existing ?? (await signup(db, { name: "Demo Host", email: DEMO_EMAIL, password: DEMO_PASSWORD }));
