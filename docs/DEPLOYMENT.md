@@ -31,19 +31,36 @@ npm start               # or the platform's start command
 
 Migrations in `drizzle/` only add to the schema. Commit them with the schema change (`npm run db:generate`). CI fails if `schema.ts` and `drizzle/` disagree.
 
-### Vercel
+### Vercel (current production)
 
-1. Add a PostgreSQL database, for example Neon from the Vercel Marketplace, which sets `DATABASE_URL`. Set the remaining variables with `vercel env add`.
-2. Set the build command to `npm run db:migrate && npm run build`, or run the migration from CI before deploying.
-3. Schedule the notification worker. Vercel Cron calls `GET` with `Authorization: Bearer $CRON_SECRET` when `CRON_SECRET` is set:
+Production runs on Vercel project `anupamk36s-projects/wedding-rsvp` at https://wedding-rsvp-pi-inky.vercel.app. The project is connected to GitHub:
+- every push to `main` deploys production
+- every other branch gets a preview deployment
 
-   ```ts
-   // vercel.ts
-   import type { VercelConfig } from "@vercel/config/v1";
-   export const config: VercelConfig = { crons: [{ path: "/api/jobs/notifications", schedule: "*/5 * * * *" }] };
-   ```
+How it is set up:
 
-   Emails are also sent right after a host clicks **Email selected**, through `after()`. The cron job sends whatever is still queued and retries failures.
+| Piece | Setup |
+|---|---|
+| Database | Neon Postgres (Vercel Marketplace, free plan) in `sin1` (Singapore). It injects `DATABASE_URL` (pooled, used at runtime) and `DATABASE_URL_UNPOOLED` (direct, used by migrations), plus Neon's other variables. |
+| Functions | Node.js 24 on Fluid Compute in `sin1`, next to the database (`vercel.json` → `regions`) |
+| Build | `npm run db:migrate && npm run build`. Migrations apply before each deployment goes live. |
+| Secrets | `APP_SECRET`, `CRON_SECRET` (sensitive) and `DATABASE_POOL_MAX=5`, all in Production and Preview |
+| `APP_URL` | Not set. The app uses the project's production domain, which follows a custom domain once you add one; previews use their own deployment URL (`src/server/lib/app-url.ts`). Set `APP_URL` only to force a specific origin. |
+| Email worker | Vercel Cron calls `/api/jobs/notifications` daily at 03:00 UTC with `Authorization: Bearer $CRON_SECRET`. Emails are also sent immediately after a host clicks **Email selected**, so the cron only retries leftovers. The Hobby plan allows daily crons only; on Pro, change the schedule to `*/5 * * * *`. |
+| Email provider | `console` (the default). Messages are logged, not delivered, until you add `EMAIL_PROVIDER=resend`, `RESEND_API_KEY` and `EMAIL_FROM` on a verified domain. |
+
+Common tasks:
+
+```bash
+npx vercel@latest env ls                         # names only, never values
+npx vercel@latest env add RESEND_API_KEY -e production --sensitive
+npx vercel@latest logs wedding-rsvp-pi-inky.vercel.app
+npx vercel@latest domains add rsvp.example.com   # then point DNS as instructed
+```
+
+Preview deployments share the production database (Neon branching is not enabled), and they run migrations in their build. Keep migrations additive, or turn on Neon's preview branching in the Vercel dashboard before you write anything destructive.
+
+**Local safety:** `vercel link` / `vercel env pull` write the production `DATABASE_URL` into `.env.local`. `db:seed` and `bench` refuse remote databases unless `ALLOW_REMOTE_DATABASE=true` is set, and `db:reset` refuses them unless `FORCE_RESET=true`. For local work, use Docker, which sets its own database.
 
 ## Docker
 

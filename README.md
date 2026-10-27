@@ -8,6 +8,8 @@ It is built for multi-day Indian weddings first, but the same model also handles
 - **Hosts** see attendance for each activity (confirmed, maybe, declined and no answer are kept apart), a night-by-night accommodation view, meal counts with dietary breakdowns, transport requests, change history, late-change flags and CSV exports.
 - **Co-organizers** can be added as organizers (manage) or viewers (read-only).
 
+**Live:** https://wedding-rsvp-pi-inky.vercel.app, deployed on Vercel with Neon Postgres in Singapore. Every push to `main` deploys; see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#vercel-current-production).
+
 ## Quick start (Docker)
 
 Requirements: Docker with Compose v2.24 or newer.

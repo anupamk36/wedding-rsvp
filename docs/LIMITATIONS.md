@@ -18,9 +18,14 @@
 - **Docker** (Docker 29, Compose v5):
   - The full stack builds and starts healthy. The migrate → app/worker ordering, seeding, and the hot-reloading `dev` service all work.
   - `npm run docker:test` passes: 54 integration tests on PostgreSQL 17 in a container, and 4 Playwright tests against the production image (5 consecutive runs with retries off).
+- **Vercel production:** deployed and checked on 2026-10-27:
+  - the Git-triggered build ran migrations and the deployment is Ready in `sin1`
+  - `/api/health` reaches Neon; security headers including HSTS are present
+  - the cron endpoint rejects requests without the secret
+  - the Playwright mobile journey (sign up → event → invitation → guest RSVP with a plus-one) passed against the live URL, and its data was then removed
 - **Not verified:**
   - real email delivery through Resend (only the console provider and a test double were exercised)
-  - deployment to any hosting platform or behind a TLS proxy
+  - a self-hosted Docker deployment behind a TLS proxy
   - the GitHub Actions workflow (written but not yet run)
 
 ## Current limitations
